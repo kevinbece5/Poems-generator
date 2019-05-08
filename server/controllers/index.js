@@ -19,8 +19,12 @@ module.exports = {
         post: async (req, res) => {
             try {
                 const body = req.body.poem;
-                await models.poem.post(body);
-                res.sendStatus(200)
+                if (body) {
+                    await models.poem.post(body);
+                    res.sendStatus(200)
+                } else {
+                    res.sendStatus(400);
+                }
             } catch (err) {
                 res.sendStatus(400);
             }
@@ -29,10 +33,14 @@ module.exports = {
         delete: async (req, res) => {
             try {
                 const poemId = req.params.id
-                await models.poem.delete(poemId);
-                res.sendStatus(200);
+                const query = await models.poem.delete(poemId);
+                if (query.changedRows === 0) {
+                    res.sendStatus(404);
+                } else {
+                    res.sendStatus(200);
+                }
             } catch (err) {
-                res.sendStatus(404);
+                res.sendStatus(400);
             }
         },
 
@@ -40,8 +48,12 @@ module.exports = {
             try {
                 const poemId = req.params.id;
                 const body = req.body.poem;
-                await models.poem.update(poemId, body);
-                res.sendStatus(200);
+                const query = await models.poem.update(poemId, body);
+                if (query.changedRows === 0) {
+                    res.sendStatus(404);
+                } else {
+                    res.sendStatus(200);
+                }
             } catch (err) {
                 res.sendStatus(404);
             }
