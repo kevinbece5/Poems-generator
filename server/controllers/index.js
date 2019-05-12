@@ -18,7 +18,7 @@ module.exports = {
 
         post: async (req, res) => {
             try {
-                const body = req.body.poem;
+                const body = req.body;
                 if (body) {
                     await models.poem.post(body);
                     res.sendStatus(200)
@@ -34,7 +34,7 @@ module.exports = {
             try {
                 const poemId = req.params.id
                 const query = await models.poem.delete(poemId);
-                if (query.changedRows === 0) {
+                if (query.affectedRows === 0) {
                     res.sendStatus(404);
                 } else {
                     res.sendStatus(200);
@@ -55,7 +55,7 @@ module.exports = {
                     res.sendStatus(200);
                 }
             } catch (err) {
-                res.sendStatus(404);
+                res.sendStatus(400);
             }
         }
 
@@ -64,8 +64,12 @@ module.exports = {
 
     poems: {
         get: async (req, res) => {
-            const query = await models.poems.get();
-            res.send(query);
+            try {
+                const query = await models.poems.get();
+                res.send(query);
+            } catch (err) {
+                res.sendStatus(400);
+            }
         }
     }
 }
