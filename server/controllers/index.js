@@ -68,7 +68,7 @@ module.exports = {
         get: async (req, res) => {
             try {
                 const query = await models.poems.get();
-                res.send(query);
+                res.send(query.reverse());
             } catch (err) {
                 res.sendStatus(400);
             }

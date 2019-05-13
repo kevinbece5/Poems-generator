@@ -43,7 +43,7 @@ export default {
         axios
           .put(`http://localhost:3000/poem/${oldPoem.id}`, {
             poem: newPoem,
-            timeStamp: moment().format("LL")
+            timeStamp: `${moment().format("LLL")} (updated)`
           })
           .then(this.getPoems());
       }

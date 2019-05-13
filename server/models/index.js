@@ -1,10 +1,10 @@
-const mysql = require('../db')
+const mysql = require('../db').db
 
 module.exports = {
     poems: {
         get: async () => {
             try {
-                return await mysql.queryAsync('SELECT * FROM poems');
+                return await mysql.queryAsync('SELECT * FROM poems.poems');
             } catch (err) {
                 throw err;
             }
@@ -14,7 +14,7 @@ module.exports = {
     poem: {
         get: async (id) => {
             try {
-                return await mysql.queryAsync(`SELECT * FROM poems WHERE id = ${id}`)
+                return await mysql.queryAsync(`SELECT * FROM poems.poems WHERE id = ${id}`)
             } catch (err) {
                 throw err;
             }
@@ -22,7 +22,7 @@ module.exports = {
 
         post: async (poem, timeStamp) => {
             try {
-                return await mysql.queryAsync(`INSERT INTO poems (poem, timeStamp) VALUES ('${poem}', '${timeStamp}')`)
+                return await mysql.queryAsync(`INSERT INTO poems.poems (poem, timeStamp) VALUES ('${poem}', '${timeStamp}')`)
             } catch (err) {
                 throw err;
             }
@@ -30,7 +30,7 @@ module.exports = {
 
         update: async (id, body) => {
             try {
-                return await mysql.queryAsync(`UPDATE poems SET poem = '${body.poem}', timeStamp = '${body.timeStamp}' WHERE id = ${id}`);
+                return await mysql.queryAsync(`UPDATE poems.poems SET poem = '${body.poem}', timeStamp = '${body.timeStamp}' WHERE id = ${id}`);
             } catch (err) {
                 throw err;
             }
@@ -38,7 +38,7 @@ module.exports = {
 
         delete: async (id) => {
             try {
-                return await mysql.queryAsync(`DELETE FROM poems WHERE id = ${id}`);
+                return await mysql.queryAsync(`DELETE FROM poems.poems WHERE id = ${id}`);
             } catch (err) {
                 throw err;
             }

@@ -127,7 +127,7 @@ export default {
       axios
         .post("http://localhost:3000/poem", {
           ...this.formItems,
-          timeStamp: moment().format("LL")
+          timeStamp: moment().format("LLL")
         })
         .then(res => {
           for (const key in this.formItems) {
