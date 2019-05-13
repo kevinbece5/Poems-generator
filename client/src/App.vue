@@ -10,30 +10,60 @@
         </div>
       </div>
     </div>
+    <span v-if="current === 'create'" id="title">Let's create a poem!</span>
     <div v-if="current === 'create'" id="inputField">
       <!-- Nouns Field -->
-      <Input v-model="formItems.noun1" :item="formItems.noun1" :title="headers.noun"/>
-      <Input v-model="formItems.noun2" :title="headers.noun"/>
-      <Input v-model="formItems.noun3" :title="headers.noun"/>
+      <Input v-model.trim="formItems.noun1" :item="formItems.noun1" :title="headers.noun"/>
+      <Input v-model.trim="formItems.noun2" :item="formItems.noun2" :title="headers.noun"/>
+      <Input v-model.trim="formItems.noun3" :item="formItems.noun3" :title="headers.noun"/>
       <!-- Adjectives -->
-      <Input v-model="formItems.adjective1" :title="headers.adjective"/>
-      <Input v-model="formItems.adjective2" :title="headers.adjective"/>
-      <Input v-model="formItems.adjective3" :title="headers.adjective"/>
+      <Input
+        v-model.trim="formItems.adjective1"
+        :item="formItems.adjective1"
+        :title="headers.adjective"
+      />
+      <Input
+        v-model.trim="formItems.adjective2"
+        :item="formItems.adjective2"
+        :title="headers.adjective"
+      />
+      <Input
+        v-model.trim="formItems.adjective3"
+        :item="formItems.adjective3"
+        :title="headers.adjective"
+      />
       <!-- Adverbs -->
-      <Input v-model="formItems.adverb1" :title="headers.adverb"/>
-      <Input v-model="formItems.adverb2" :title="headers.adverb"/>
-      <Input v-model="formItems.adverb3" :title="headers.adverb"/>
+      <Input v-model.trim="formItems.adverb1" :item="formItems.adverb1" :title="headers.adverb"/>
+      <Input v-model.trim="formItems.adverb2" :item="formItems.adverb2" :title="headers.adverb"/>
+      <Input v-model.trim="formItems.adverb3" :item="formItems.adverb3" :title="headers.adverb"/>
       <!-- Prepositions -->
-      <Input v-model="formItems.preposition1" :title="headers.preposition"/>
-      <Input v-model="formItems.preposition2" :title="headers.preposition"/>
-      <Input v-model="formItems.preposition3" :title="headers.preposition"/>
+      <Input
+        v-model.trim="formItems.preposition1"
+        :item="formItems.preposition1"
+        :title="headers.preposition"
+      />
+      <Input
+        v-model.trim="formItems.preposition2"
+        :item="formItems.preposition2"
+        :title="headers.preposition"
+      />
+      <Input
+        v-model.trim="formItems.preposition3"
+        :item="formItems.preposition3"
+        :title="headers.preposition"
+      />
       <!-- Verbs -->
-      <Input v-model="formItems.verb1" :title="headers.verb"/>
-      <Input v-model="formItems.verb2" :title="headers.verb"/>
-      <Input v-model="formItems.verb3" :title="headers.verb"/>
-      <button v-on:click="submitForm" :disabled="!isComplete" class="btn btn-primary">Submit</button>
+      <Input v-model.trim="formItems.verb1" :item="formItems.verb1" :title="headers.verb"/>
+      <Input v-model.trim="formItems.verb2" :item="formItems.verb2" :title="headers.verb"/>
+      <Input v-model.trim="formItems.verb3" :item="formItems.verb3" :title="headers.verb"/>
     </div>
     <Poems v-else/>
+    <button
+      v-if="current === 'create'"
+      v-on:click="submitForm"
+      :disabled="!isComplete"
+      class="btn btn-primary"
+    >Submit</button>
   </div>
 </template>
 
@@ -41,6 +71,7 @@
 import Input from "./components/Input.vue";
 import Poems from "./components/Poems.vue";
 import * as axios from "axios";
+import * as moment from "moment";
 export default {
   components: {
     Input,
@@ -77,31 +108,31 @@ export default {
   },
   computed: {
     isComplete() {
-      return (
-        this.formItems.noun1 &&
-        this.formItems.noun2 &&
-        this.formItems.noun3 &&
-        this.formItems.adjective1 &&
-        this.formItems.adjective2 &&
-        this.formItems.adjective3 &&
-        this.formItems.adverb1 &&
-        this.formItems.adverb2 &&
-        this.formItems.adverb3 &&
-        this.formItems.preposition1 &&
-        this.formItems.preposition2 &&
-        this.formItems.preposition3 &&
-        this.formItems.verb1 &&
-        this.formItems.verb2 &&
-        this.formItems.verb3
-      );
+      let filled = true;
+      let validated = true;
+      for (const item in this.formItems) {
+        if (!this.formItems[item]) {
+          filled = false;
+        }
+        if (/[^a-zA-Z]/.test(this.formItems[item])) {
+          validated = false;
+        }
+      }
+      console.log(filled, validated);
+      return filled && validated;
     }
   },
   methods: {
     submitForm() {
       console.log(this.formItems);
-      axios.post("http://localhost:3000/poem", this.formItems).then(res => {
-        console.log("done");
-      });
+      axios
+        .post("http://localhost:3000/poem", {
+          ...this.formItems,
+          timeStamp: moment().format("LL")
+        })
+        .then(res => {
+          console.log("done");
+        });
     }
   }
 };
@@ -112,6 +143,16 @@ export default {
 body {
   margin: 0;
   padding: 0;
+}
+
+.btn {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  font-size: 25px;
+  margin: 35px;
+  font-family: sans-serif;
 }
 
 .headerLinkUnderline {
@@ -129,8 +170,10 @@ body {
 #inputField {
   display: flex;
   justify-content: center;
-  flex: 1;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0 90px;
 }
 
 #container {
@@ -174,5 +217,12 @@ body {
   letter-spacing: -0.2px;
   color: #ffffff;
   margin-right: 24px;
+}
+
+#title {
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+  font-family: sans-serif;
 }
 </style>
