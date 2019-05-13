@@ -13,49 +13,49 @@
     <span v-if="current === 'create'" id="title">Let's create a poem!</span>
     <div v-if="current === 'create'" id="inputField">
       <!-- Nouns Field -->
-      <Input v-model.trim="formItems.noun1" :item="formItems.noun1" :title="headers.noun"/>
-      <Input v-model.trim="formItems.noun2" :item="formItems.noun2" :title="headers.noun"/>
-      <Input v-model.trim="formItems.noun3" :item="formItems.noun3" :title="headers.noun"/>
+      <Input v-model="formItems.noun1" :item="formItems.noun1" :title="headers.noun"/>
+      <Input v-model="formItems.noun2" :item="formItems.noun2" :title="headers.noun"/>
+      <Input v-model="formItems.noun3" :item="formItems.noun3" :title="headers.noun"/>
       <!-- Adjectives -->
       <Input
-        v-model.trim="formItems.adjective1"
+        v-model="formItems.adjective1"
         :item="formItems.adjective1"
         :title="headers.adjective"
       />
       <Input
-        v-model.trim="formItems.adjective2"
+        v-model="formItems.adjective2"
         :item="formItems.adjective2"
         :title="headers.adjective"
       />
       <Input
-        v-model.trim="formItems.adjective3"
+        v-model="formItems.adjective3"
         :item="formItems.adjective3"
         :title="headers.adjective"
       />
       <!-- Adverbs -->
-      <Input v-model.trim="formItems.adverb1" :item="formItems.adverb1" :title="headers.adverb"/>
-      <Input v-model.trim="formItems.adverb2" :item="formItems.adverb2" :title="headers.adverb"/>
-      <Input v-model.trim="formItems.adverb3" :item="formItems.adverb3" :title="headers.adverb"/>
+      <Input v-model="formItems.adverb1" :item="formItems.adverb1" :title="headers.adverb"/>
+      <Input v-model="formItems.adverb2" :item="formItems.adverb2" :title="headers.adverb"/>
+      <Input v-model="formItems.adverb3" :item="formItems.adverb3" :title="headers.adverb"/>
       <!-- Prepositions -->
       <Input
-        v-model.trim="formItems.preposition1"
+        v-model="formItems.preposition1"
         :item="formItems.preposition1"
         :title="headers.preposition"
       />
       <Input
-        v-model.trim="formItems.preposition2"
+        v-model="formItems.preposition2"
         :item="formItems.preposition2"
         :title="headers.preposition"
       />
       <Input
-        v-model.trim="formItems.preposition3"
+        v-model="formItems.preposition3"
         :item="formItems.preposition3"
         :title="headers.preposition"
       />
       <!-- Verbs -->
-      <Input v-model.trim="formItems.verb1" :item="formItems.verb1" :title="headers.verb"/>
-      <Input v-model.trim="formItems.verb2" :item="formItems.verb2" :title="headers.verb"/>
-      <Input v-model.trim="formItems.verb3" :item="formItems.verb3" :title="headers.verb"/>
+      <Input v-model="formItems.verb1" :item="formItems.verb1" :title="headers.verb"/>
+      <Input v-model="formItems.verb2" :item="formItems.verb2" :title="headers.verb"/>
+      <Input v-model="formItems.verb3" :item="formItems.verb3" :title="headers.verb"/>
     </div>
     <Poems v-else/>
     <button
@@ -118,20 +118,24 @@ export default {
           validated = false;
         }
       }
-      console.log(filled, validated);
+
       return filled && validated;
     }
   },
   methods: {
     submitForm() {
-      console.log(this.formItems);
       axios
         .post("http://localhost:3000/poem", {
           ...this.formItems,
           timeStamp: moment().format("LL")
         })
         .then(res => {
-          console.log("done");
+          for (const key in this.formItems) {
+            this.formItems[key] = "";
+          }
+        })
+        .then(() => {
+          this.current = "all";
         });
     }
   }
