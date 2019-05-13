@@ -11,6 +11,19 @@
       </div>
     </div>
     <span v-if="current === 'create'" id="title">Let's create a poem!</span>
+    <ul v-if="current === 'create'" class="list-group list-group-horizontal-md itemsCounter">
+      <li v-if="itemsLeft('noun')" class="list-group-item">Nouns: {{itemsLeft('noun')}}</li>
+      <li
+        v-if="itemsLeft('adjective')"
+        class="list-group-item"
+      >Adjectives: {{itemsLeft('adjective')}}</li>
+      <li v-if="itemsLeft('adverb')" class="list-group-item">Adverbs: {{itemsLeft('adverb')}}</li>
+      <li
+        v-if="itemsLeft('preposition')"
+        class="list-group-item"
+      >Prepositions: {{itemsLeft('preposition')}}</li>
+      <li v-if="itemsLeft('verb')" class="list-group-item">Verbs: {{itemsLeft('verb')}}</li>
+    </ul>
     <div v-if="current === 'create'" id="inputField">
       <!-- Nouns Field -->
       <Input v-model="formItems.noun1" :item="formItems.noun1" :title="headers.noun"/>
@@ -107,7 +120,7 @@ export default {
     };
   },
   computed: {
-    isComplete() {
+    isComplete: function() {
       let filled = true;
       let validated = true;
       for (const item in this.formItems) {
@@ -137,6 +150,18 @@ export default {
         .then(() => {
           this.current = "all";
         });
+    },
+    itemsLeft: function(name) {
+      let count = 3;
+      for (let i = 0; i < 3; i++) {
+        if (
+          this.formItems[name + (i + 1)] &&
+          !/[^a-zA-Z]/.test(this.formItems[name + (i + 1)])
+        ) {
+          count--;
+        }
+      }
+      return count;
     }
   }
 };
@@ -178,6 +203,10 @@ body {
   flex-wrap: wrap;
   width: 100%;
   padding: 0 90px;
+}
+
+.itemsCounter {
+  justify-content: center;
 }
 
 #container {
