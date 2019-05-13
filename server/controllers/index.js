@@ -1,4 +1,5 @@
 const models = require('../models');
+const poemTemplate = require('../poems');
 
 module.exports = {
     poem: {
@@ -20,10 +21,11 @@ module.exports = {
             try {
                 const body = req.body;
                 if (body) {
-                    await models.poem.post(body);
+                    const template = poemTemplate.poem(body);
+                    await models.poem.post(template, body.timeStamp);
                     res.sendStatus(200)
                 } else {
-                    res.sendStatus(400);
+                    res.sendStatus(422);
                 }
             } catch (err) {
                 res.sendStatus(400);
@@ -47,7 +49,7 @@ module.exports = {
         update: async (req, res) => {
             try {
                 const poemId = req.params.id;
-                const body = req.body.poem;
+                const body = req.body;
                 const query = await models.poem.update(poemId, body);
                 if (query.changedRows === 0) {
                     res.sendStatus(404);
