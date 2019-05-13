@@ -20,17 +20,17 @@ module.exports = {
             }
         },
 
-        post: async (poem) => {
+        post: async (poem, timeStamp) => {
             try {
-                return await mysql.queryAsync(`INSERT INTO poems (poem) VALUES ('${poem}')`)
+                return await mysql.queryAsync(`INSERT INTO poems (poem, timeStamp) VALUES ('${poem}', '${timeStamp}')`)
             } catch (err) {
                 throw err;
             }
         },
 
-        update: async (id, poem) => {
+        update: async (id, body) => {
             try {
-                return await mysql.queryAsync(`UPDATE poems SET poem = '${poem}' WHERE id = ${id}`);
+                return await mysql.queryAsync(`UPDATE poems SET poem = '${body.poem}', timeStamp = '${body.timeStamp}' WHERE id = ${id}`);
             } catch (err) {
                 throw err;
             }
