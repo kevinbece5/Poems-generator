@@ -1,7 +1,16 @@
 <template>
   <div id="container">
     <span id="title">{{ title }}</span>
-    <input :value="item" @input="updateForm($event.target.value)" ref="input">
+
+    <input
+      type="text"
+      :value="item"
+      @input="updateForm($event.target.value)"
+      ref="input"
+      class="form-control formInput"
+      aria-label="Sizing example input"
+      aria-describedby="inputGroup-sizing-default"
+    >
   </div>
 </template>
 
@@ -23,11 +32,15 @@ export default {
 #title {
   font-size: 35px;
 }
+.formInput {
+  font-size: 20px;
+}
 
 #container {
   display: flex;
   flex-direction: column;
   justify-content: end;
-  padding: 22px;
+  padding: 5px 20px;
+  width: 30%;
 }
 </style>
