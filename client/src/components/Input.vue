@@ -1,10 +1,11 @@
 <template>
   <div id="container">
     <span id="title">{{ title }}</span>
-
     <input
       type="text"
       :value="item"
+      :class="{err}"
+      v-on:keyup="validate($event.target.value)"
       @input="updateForm($event.target.value)"
       ref="input"
       class="form-control formInput"
@@ -17,12 +18,17 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      err: false
+    };
   },
   props: ["title", "item"],
   methods: {
     updateForm(item) {
       this.$emit("input", item);
+    },
+    validate(i) {
+      this.err = /[^a-zA-Z]/.test(i);
     }
   }
 };
@@ -34,6 +40,12 @@ export default {
 }
 .formInput {
   font-size: 20px;
+}
+.err,
+.err:focus {
+  border: 3px solid tomato;
+  outline: none;
+  box-shadow: none;
 }
 
 #container {
