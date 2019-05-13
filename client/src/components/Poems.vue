@@ -3,21 +3,29 @@
     <span v-if="poems.length" id="title">All Poems!</span>
     <span v-else id="title">Oh no! You don't have any poems</span>
     <ul class="list-group list-group-flush">
-      <li :key="poem.id" v-for="poem in poems" class="list-group-item listItem">
-        <span class="poem">{{poem.poem}}</span>
-        <span class="timeStamp">{{poem.timeStamp}}</span>
-        <button v-on:click="deletePoem(poem.id)" type="button" class="btn btn-danger">Delete</button>
-      </li>
+      <Poem
+        v-for="poem in poems"
+        :key="poem.id"
+        :poem="poem"
+        :saveEdit="saveEdit"
+        :deletePoem="deletePoem"
+      />
     </ul>
   </div>
 </template>
 
 <script>
 import * as axios from "axios";
+import * as moment from "moment";
+import Poem from "./Poem.vue";
 export default {
+  components: {
+    Poem
+  },
   data() {
     return {
-      poems: []
+      poems: [],
+      editMode: false
     };
   },
   mounted: function() {
@@ -27,8 +35,18 @@ export default {
   },
   methods: {
     deletePoem(id) {
-      console.log("poem", id);
       axios.delete(`http://localhost:3000/poem/${id}`).then(this.getPoems());
+    },
+    saveEdit(newPoem, oldPoem) {
+      // will only update when changes are made
+      if (newPoem !== oldPoem.poem) {
+        axios
+          .put(`http://localhost:3000/poem/${oldPoem.id}`, {
+            poem: newPoem,
+            timeStamp: moment().format("LL")
+          })
+          .then(this.getPoems());
+      }
     },
     getPoems() {
       axios.get("http://localhost:3000/poems").then(res => {
@@ -46,17 +64,15 @@ export default {
   font-size: 30px;
   font-family: sans-serif;
 }
-.timeStamp {
-  width: 12%;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
 .poem {
   width: 80%;
   display: flex;
 }
 .listItem {
   display: flex;
+}
+.buttons {
+  width: 5%;
+  margin: 0 20px;
 }
 </style>
