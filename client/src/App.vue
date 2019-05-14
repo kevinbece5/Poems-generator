@@ -138,7 +138,7 @@ export default {
   methods: {
     submitForm() {
       axios
-        .post("http://localhost:3000/poem", {
+        .post("/poem", {
           ...this.formItems,
           timeStamp: moment().format("LLL")
         })

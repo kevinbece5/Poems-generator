@@ -29,19 +29,19 @@ export default {
     };
   },
   mounted: function() {
-    axios.get("http://localhost:3000/poems").then(res => {
+    axios.get("/poems").then(res => {
       this.poems = res.data;
     });
   },
   methods: {
     deletePoem(id) {
-      axios.delete(`http://localhost:3000/poem/${id}`).then(this.getPoems());
+      axios.delete(`/poem/${id}`).then(this.getPoems());
     },
     saveEdit(newPoem, oldPoem) {
       // will only update when changes are made
       if (newPoem !== oldPoem.poem) {
         axios
-          .put(`http://localhost:3000/poem/${oldPoem.id}`, {
+          .put(`/poem/${oldPoem.id}`, {
             poem: newPoem,
             timeStamp: `${moment().format("LLL")} (updated)`
           })
@@ -49,7 +49,7 @@ export default {
       }
     },
     getPoems() {
-      axios.get("http://localhost:3000/poems").then(res => {
+      axios.get("/poems").then(res => {
         this.poems = res.data;
       });
     }
